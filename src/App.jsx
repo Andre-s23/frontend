@@ -6,7 +6,8 @@ function App() {
   const [text, setText] = useState('')
   const [status, setStatus] = useState('')
   const [loading, setLoading] = useState(false)
-
+  const [extraText, setExtraText] = useState('')
+  const [fetchedData, setFetchedData] = useState('')
   const handleSubmit = async (e) => {
     e.preventDefault()
 
@@ -17,6 +18,7 @@ function App() {
 
     setLoading(true)
     setStatus('')
+    setFetchedData('')
 
     try {
       const response = await fetch('http://localhost:5000/submit', {
@@ -40,6 +42,25 @@ function App() {
     } finally {
       setLoading(false)
     }
+}
+const handleFetchData = async () => {
+    setLoading(true)
+    setStatus('')
+
+    try {
+      const response = await fetch('http://localhost:5000/data')
+      const data = await response.json()
+
+      if (response.ok) {
+        setFetchedData(data.content)
+      } else {
+        setFetchedData(`Ошибка: ${data.error}`)
+      }
+    } catch (error) {
+      setFetchedData(`Ошибка: ${error.message}`)
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -55,12 +76,26 @@ function App() {
           disabled={loading}
           className="input"
         />
-        <button type="submit" disabled={loading} className="button">
-          {loading ? 'Отправка...' : 'Отправить'}
+
+        <button type="submit"  className="button primary">
+            Отправить
         </button>
       </form>
 
       {status && <p className="status">{status}</p>}
+
+      <div className="fetch-section">
+        <button onClick={handleFetchData}  className="button secondary">
+            Получить
+        </button>
+
+        {fetchedData && (
+          <div className="result-box">
+            <h3>Результат из data.txt:</h3>
+            <pre>{fetchedData}</pre>
+          </div>
+        )}
+      </div>
     </div>
   )
 }
