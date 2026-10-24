@@ -21,7 +21,7 @@ function App() {
     setFetchedData('')
 
     try {
-      const response = await fetch('http://localhost:5000/submit', {
+      const response = await fetch('/api/submit', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -48,7 +48,7 @@ const handleFetchData = async () => {
     setStatus('')
 
     try {
-      const response = await fetch('http://localhost:5000/data')
+      const response = await fetch('/api/data')
       const data = await response.json()
 
       if (response.ok) {
